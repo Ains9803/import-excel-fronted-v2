@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss"
 
 const config: Config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
@@ -14,45 +14,60 @@ const config: Config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        // Colores inspirados en Excel
+        excel: {
+          50: '#f0fdf4',    // Verde muy claro
+          100: '#dcfce7',   // Verde claro
+          200: '#bbf7d0',   // Verde pastel
+          300: '#86efac',   // Verde suave
+          400: '#4ade80',   // Verde medio
+          500: '#22c55e',   // Verde Excel (principal)
+          600: '#16a34a',   // Verde oscuro
+          700: '#15803d',   // Verde muy oscuro
+          800: '#166534',   // Verde profundo
+          900: '#145231',   // Verde casi negro
+        },
+        
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-          50: '#eff6ff',
-          100: '#dbeafe',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
+          DEFAULT: "#16a34a",      // Verde Excel
+          foreground: "#ffffff",
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          500: '#22c55e',
+          600: '#16a34a',
+          700: '#15803d',
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#6b7280",      // Gris
+          foreground: "#ffffff",
+        },
+        accent: {
+          DEFAULT: "#1f2937",      // Gris oscuro
+          foreground: "#ffffff",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "#f3f4f6",       // Gris muy claro
+          foreground: "#6b7280",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "#ffffff",
+          foreground: "#1f2937",
         },
         success: {
-          500: '#22c55e',
+          500: '#22c55e',           // Verde Excel
           600: '#16a34a',
         },
+        warning: {
+          500: '#f59e0b',           // Naranja
+          600: '#d97706',
+        },
         error: {
-          500: '#ef4444',
+          500: '#ef4444',           // Rojo
           600: '#dc2626',
         },
       },

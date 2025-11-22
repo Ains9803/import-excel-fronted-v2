@@ -72,28 +72,35 @@ export default function RegisterForm() {
     const passwordValue = watch('password')
 
     return (
-        <Card className="w-full max-w-[420px] mx-auto shadow-xl border-slate-200 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <CardHeader className="space-y-3 pb-6">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mx-auto">
-                    <UserPlus className="h-6 w-6 text-blue-600" />
+        <Card className="w-full max-w-[440px] mx-auto shadow-2xl border-green-100 animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden bg-white/95 backdrop-blur-sm">
+            {/* Barra superior con gradiente Excel */}
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500"></div>
+            
+            <CardHeader className="space-y-4 pb-6 pt-8">
+                <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 mx-auto shadow-lg">
+                    <UserPlus className="h-8 w-8 text-white" />
                 </div>
-                <CardTitle className="text-2xl font-bold text-center text-slate-900">
-                    Crear cuenta nueva
-                </CardTitle>
-                <CardDescription className="text-center text-slate-600">
-                    Completa el formulario para registrarte
-                </CardDescription>
+                <div className="text-center space-y-2">
+                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+                        Crear cuenta
+                    </CardTitle>
+                    <CardDescription className="text-base text-gray-600">
+                        Completa el formulario para comenzar
+                    </CardDescription>
+                </div>
             </CardHeader>
             
             <CardContent className="pb-8">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     {/* Server Error Alert */}
                     {serverError && formState === 'error' && (
-                        <div className="p-4 rounded-lg bg-red-50 border border-red-200 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="p-4 rounded-xl bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-200 animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
                             <div className="flex items-start gap-3">
-                                <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+                                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shrink-0">
+                                    <AlertCircle className="h-4 w-4 text-white" />
+                                </div>
                                 <div className="flex-1">
-                                    <p className="text-sm font-medium text-red-900">Error al crear cuenta</p>
+                                    <p className="text-sm font-bold text-red-900">Error al crear cuenta</p>
                                     <p className="text-sm text-red-700 mt-1">{serverError}</p>
                                 </div>
                             </div>
@@ -104,14 +111,14 @@ export default function RegisterForm() {
                     <div className="space-y-2">
                         <Label 
                             htmlFor="name" 
-                            className="text-sm font-medium text-slate-700"
+                            className="text-sm font-semibold text-gray-700"
                         >
                             Nombre completo
                         </Label>
-                        <div className="relative">
+                        <div className="relative group">
                             <User className={cn(
-                                "absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 transition-colors duration-200",
-                                errors.name ? "text-red-500" : touchedFields.name && !errors.name ? "text-blue-500" : "text-slate-400"
+                                "absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 transition-all duration-200",
+                                errors.name ? "text-red-500" : touchedFields.name && !errors.name ? "text-green-500" : "text-gray-400 group-hover:text-green-500"
                             )} />
                             <Input
                                 id="name"
@@ -119,9 +126,10 @@ export default function RegisterForm() {
                                 placeholder="Juan Pérez"
                                 disabled={formState === 'submitting'}
                                 className={cn(
-                                    "pl-11 h-11 transition-all duration-200",
-                                    errors.name && "border-red-500 focus-visible:ring-red-500",
-                                    touchedFields.name && !errors.name && nameValue && "border-blue-500 focus-visible:ring-blue-500"
+                                    "pl-12 h-12 rounded-xl transition-all duration-200 border-2",
+                                    errors.name && "border-red-300 focus-visible:ring-red-500 bg-red-50/50",
+                                    touchedFields.name && !errors.name && nameValue && "border-green-300 focus-visible:ring-green-500 bg-green-50/50",
+                                    !errors.name && !touchedFields.name && "border-gray-200 hover:border-green-300"
                                 )}
                                 aria-invalid={errors.name ? "true" : "false"}
                                 aria-describedby={errors.name ? "name-error" : undefined}
@@ -143,14 +151,14 @@ export default function RegisterForm() {
                     <div className="space-y-2">
                         <Label 
                             htmlFor="email" 
-                            className="text-sm font-medium text-slate-700"
+                            className="text-sm font-semibold text-gray-700"
                         >
-                            Email
+                            Correo electrónico
                         </Label>
-                        <div className="relative">
+                        <div className="relative group">
                             <Mail className={cn(
-                                "absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 transition-colors duration-200",
-                                errors.email ? "text-red-500" : touchedFields.email && !errors.email ? "text-blue-500" : "text-slate-400"
+                                "absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 transition-all duration-200",
+                                errors.email ? "text-red-500" : touchedFields.email && !errors.email ? "text-green-500" : "text-gray-400 group-hover:text-green-500"
                             )} />
                             <Input
                                 id="email"
@@ -158,9 +166,10 @@ export default function RegisterForm() {
                                 placeholder="tu@email.com"
                                 disabled={formState === 'submitting'}
                                 className={cn(
-                                    "pl-11 h-11 transition-all duration-200",
-                                    errors.email && "border-red-500 focus-visible:ring-red-500",
-                                    touchedFields.email && !errors.email && emailValue && "border-blue-500 focus-visible:ring-blue-500"
+                                    "pl-12 h-12 rounded-xl transition-all duration-200 border-2",
+                                    errors.email && "border-red-300 focus-visible:ring-red-500 bg-red-50/50",
+                                    touchedFields.email && !errors.email && emailValue && "border-green-300 focus-visible:ring-green-500 bg-green-50/50",
+                                    !errors.email && !touchedFields.email && "border-gray-200 hover:border-green-300"
                                 )}
                                 aria-invalid={errors.email ? "true" : "false"}
                                 aria-describedby={errors.email ? "email-error" : undefined}
@@ -182,14 +191,14 @@ export default function RegisterForm() {
                     <div className="space-y-2">
                         <Label 
                             htmlFor="password" 
-                            className="text-sm font-medium text-slate-700"
+                            className="text-sm font-semibold text-gray-700"
                         >
                             Contraseña
                         </Label>
-                        <div className="relative">
+                        <div className="relative group">
                             <Lock className={cn(
-                                "absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 transition-colors duration-200",
-                                errors.password ? "text-red-500" : touchedFields.password && !errors.password ? "text-blue-500" : "text-slate-400"
+                                "absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 transition-all duration-200",
+                                errors.password ? "text-red-500" : touchedFields.password && !errors.password ? "text-green-500" : "text-gray-400 group-hover:text-green-500"
                             )} />
                             <Input
                                 id="password"
@@ -197,9 +206,10 @@ export default function RegisterForm() {
                                 placeholder="••••••••"
                                 disabled={formState === 'submitting'}
                                 className={cn(
-                                    "pl-11 pr-11 h-11 transition-all duration-200",
-                                    errors.password && "border-red-500 focus-visible:ring-red-500",
-                                    touchedFields.password && !errors.password && passwordValue && "border-blue-500 focus-visible:ring-blue-500"
+                                    "pl-12 pr-12 h-12 rounded-xl transition-all duration-200 border-2",
+                                    errors.password && "border-red-300 focus-visible:ring-red-500 bg-red-50/50",
+                                    touchedFields.password && !errors.password && passwordValue && "border-green-300 focus-visible:ring-green-500 bg-green-50/50",
+                                    !errors.password && !touchedFields.password && "border-gray-200 hover:border-green-300"
                                 )}
                                 aria-invalid={errors.password ? "true" : "false"}
                                 aria-describedby={errors.password ? "password-error" : undefined}
@@ -208,7 +218,7 @@ export default function RegisterForm() {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors duration-200"
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors duration-200"
                                 aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                             >
                                 {showPassword ? (
@@ -232,19 +242,19 @@ export default function RegisterForm() {
                     {/* Submit Button */}
                     <Button 
                         type="submit" 
-                        className="w-full h-11 text-base font-semibold mt-6 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer transition-all duration-200 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+                        className="w-full h-13 text-base font-bold mt-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 rounded-xl"
                         disabled={formState === 'submitting' || !isValid}
                     >
                         {formState === 'submitting' ? (
-                            <>
-                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            <span className="flex items-center justify-center gap-2">
+                                <Loader2 className="h-5 w-5 animate-spin" />
                                 Creando cuenta...
-                            </>
+                            </span>
                         ) : (
-                            <>
-                                <UserPlus className="mr-2 h-5 w-5" />
+                            <span className="flex items-center justify-center gap-2">
+                                <UserPlus className="h-5 w-5" />
                                 Crear cuenta
-                            </>
+                            </span>
                         )}
                     </Button>
                 </form>

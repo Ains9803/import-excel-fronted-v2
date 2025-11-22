@@ -135,36 +135,49 @@ export const DropZone = forwardRef<DropZoneRef, DropZoneProps>(({ onFileSelect, 
         onKeyDown={handleKeyDown}
         className={`
           relative flex flex-col items-center justify-center
-          min-h-[200px] sm:min-h-[280px] p-6 sm:p-8 rounded-lg
-          transition-all duration-200 cursor-pointer
-          focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2
+          min-h-[200px] sm:min-h-[280px] p-6 sm:p-8 rounded-xl
+          transition-all duration-300 cursor-pointer
+          focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2
           ${isDragging 
-            ? 'border-2 border-solid border-blue-600 bg-blue-50' 
-            : 'border-2 border-dashed border-slate-300 bg-slate-50 hover:border-slate-400 hover:bg-slate-100'
+            ? 'border-2 border-solid border-green-500 bg-gradient-to-br from-green-50 to-emerald-50 scale-[1.02] shadow-lg' 
+            : 'border-2 border-dashed border-gray-300 bg-gradient-to-br from-gray-50 to-white hover:border-green-400 hover:bg-gradient-to-br hover:from-green-50 hover:to-emerald-50 hover:shadow-md'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
       >
-        {/* Icon */}
-        <div className={`mb-3 sm:mb-4 ${isDragging ? 'text-blue-600' : 'text-slate-500'}`}>
+        {/* Icon con animación */}
+        <div className={`mb-4 sm:mb-5 transition-all duration-300 ${isDragging ? 'text-green-600 scale-110' : 'text-gray-400'}`}>
           {isDragging ? (
-            <FileText className="w-12 h-12 sm:w-16 sm:h-16" />
+            <div className="relative">
+              <FileText className="w-14 h-14 sm:w-20 sm:h-20 animate-bounce" />
+              <div className="absolute inset-0 bg-green-500 opacity-20 blur-xl rounded-full"></div>
+            </div>
           ) : (
-            <Upload className="w-12 h-12 sm:w-16 sm:h-16" />
+            <div className="relative">
+              <Upload className="w-14 h-14 sm:w-20 sm:h-20" />
+              <div className="absolute -bottom-1 -right-1 h-6 w-6 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </div>
           )}
         </div>
 
         {/* Text content */}
         <div className="text-center">
-          <p className="text-base sm:text-lg font-semibold text-slate-700 mb-2">
-            {isDragging ? 'Suelta el archivo aquí' : 'Arrastra y suelta tu archivo Excel'}
+          <p className={`text-base sm:text-lg font-bold mb-2 transition-colors duration-300 ${isDragging ? 'text-green-700' : 'text-gray-800'}`}>
+            {isDragging ? '¡Suelta el archivo aquí!' : 'Arrastra tu archivo Excel'}
           </p>
-          <p className="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-4">
-            o haz clic para seleccionar
+          <p className="text-xs sm:text-sm text-gray-600 mb-4">
+            o haz clic para seleccionar desde tu equipo
           </p>
-          <p className="text-xs text-slate-600">
-            Formatos aceptados: .xlsx, .xls (máximo 10 MB)
-          </p>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-gray-200 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-600" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+            </svg>
+            <span className="text-xs font-medium text-gray-700">.xlsx, .xls • Máx. 10 MB</span>
+          </div>
         </div>
       </div>
 

@@ -8,12 +8,19 @@ export async function importExcel(
 ): Promise<ImportResult> {
     const data = new FormData();
     data.append("file", file);
+    
+    const token = localStorage.getItem("token");
+    const headers: Record<string, string> = {
+        "Content-Type": "multipart/form-data",
+        'Accept': 'application/json',
+    };
+    
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    
     const response = await axios.post<ImportResult>(`${API_URL}${IMPORT_PEOPLE_ENDPOINT}`, data, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem("token")
-        },
+        headers,
         onUploadProgress: (event) =>
             onProgress?.(Math.round((event.loaded * 100) / (event.total ?? 1))),
     })

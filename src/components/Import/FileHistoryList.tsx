@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileHistoryItem } from '@/types/ui';
+import type { FileHistoryItem } from '@/types/ui';
 import { formatFileSize, formatDate } from '@/utils/formatters';
 import { FileText, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 
