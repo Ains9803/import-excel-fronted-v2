@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Fondo con gradiente verde -->
+  <rect width="32" height="32" rx="6" fill="url(#grad)"/>
+  
+  <!-- Gradiente -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#16a34a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Ícono de tabla/Excel simplificado -->
+  <rect x="8" y="8" width="16" height="16" rx="1.5" fill="white" opacity="0.95"/>
+  
+  <!-- Líneas horizontales -->
+  <line x1="8" y1="13" x2="24" y2="13" stroke="#16a34a" stroke-width="1"/>
+  <line x1="8" y1="18" x2="24" y2="18" stroke="#16a34a" stroke-width="1"/>
+  
+  <!-- Líneas verticales -->
+  <line x1="14" y1="8" x2="14" y2="24" stroke="#16a34a" stroke-width="1"/>
+  <line x1="19" y1="8" x2="19" y2="24" stroke="#16a34a" stroke-width="1"/>
+  
+  <!-- Flecha de importación -->
+  <path d="M16 10 L16 15 M14 13 L16 15 L18 13" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
