@@ -8,39 +8,50 @@ import { Button } from "./components/ui/button.tsx";
 import { LogOut, User, FileSpreadsheet } from "lucide-react";
 
 function App() {
-    const { user, logout } = useAuth();
+    const { user, logout, loading } = useAuth();
     const [showRegister, setShowRegister] = useState(false);
 
-    if (!user) {
+    if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-                {/* Background decorativo */}
-                <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-emerald-50"></div>
-                <div className="absolute top-0 left-0 w-96 h-96 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-                <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-                <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-green-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-
-                <div className="w-full max-w-md space-y-6 relative z-10">
-                    {showRegister ? <RegisterForm /> : <LoginForm />}
-                    <div className="text-center">
-                        <button
-                            onClick={() => setShowRegister((s: boolean) => !s)}
-                            className="relative inline-block text-sm font-medium cursor-pointer transition-all duration-200 group"
-                        >
-                            <span className="inline-block text-gray-700 group-hover:text-green-600 transition-colors duration-200">
-                                {showRegister ? (
-                                    <>¿Ya tienes cuenta? <span className="font-bold">Inicia sesión</span></>
-                                ) : (
-                                    <>¿No tienes cuenta? <span className="font-bold">Regístrate</span></>
-                                )}
-                            </span>
-                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 group-hover:w-full transition-all duration-300 ease-out"></span>
-                        </button>
-                    </div>
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Cargando...</p>
                 </div>
             </div>
-        )
+        );
     }
+
+    // if (!user) {
+    //     return (
+    //         <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    //             {/* Background decorativo */}
+    //             <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-emerald-50"></div>
+    //             <div className="absolute top-0 left-0 w-96 h-96 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+    //             <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+    //             <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-green-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+
+    //             <div className="w-full max-w-md space-y-6 relative z-10">
+    //                 {showRegister ? <RegisterForm /> : <LoginForm />}
+    //                 <div className="text-center">
+    //                     <button
+    //                         onClick={() => setShowRegister((s: boolean) => !s)}
+    //                         className="relative inline-block text-sm font-medium cursor-pointer transition-all duration-200 group"
+    //                     >
+    //                         <span className="inline-block text-gray-700 group-hover:text-green-600 transition-colors duration-200">
+    //                             {showRegister ? (
+    //                                 <>¿Ya tienes cuenta? <span className="font-bold">Inicia sesión</span></>
+    //                             ) : (
+    //                                 <>¿No tienes cuenta? <span className="font-bold">Regístrate</span></>
+    //                             )}
+    //                         </span>
+    //                         <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 group-hover:w-full transition-all duration-300 ease-out"></span>
+    //                     </button>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     )
+    // }
 
     return (
         <div className="min-h-screen">
@@ -64,7 +75,7 @@ function App() {
                     <div className="flex items-center gap-2 sm:gap-3">
                         <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
                             <User className="h-4 w-4 text-white" />
-                            <span className="text-sm font-medium text-white">{user?.email || 'usuario@demo.com'}</span>
+                            <span className="text-sm font-medium text-white">{user?.name || user?.email || 'Usuario'}</span>
                         </div>
                         <Button
                             onClick={logout}

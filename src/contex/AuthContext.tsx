@@ -1,13 +1,14 @@
 import {createContext, useContext, useState, useEffect} from "react";
 import type {AuthUser, LoginRequest, RegisterRequest} from "../types/auth.ts";
-import {login as apiLogin, register as apiRegister} from "../services/auth.ts";
+import {login as apiLogin, register as apiRegister, logout as apiLogout, getUser as apiGetUser} from "../services/auth.ts";
 
 interface AuthContextType {
     user: AuthUser | null,
     loading: boolean,
     login: (data: LoginRequest) => Promise<void>,
     register: (data: RegisterRequest) => Promise<void>,
-    logout: () => void,
+    logout: () => Promise<void>,
+    refreshUser: () => Promise<void>,
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -17,12 +18,25 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        const userData = localStorage.getItem("user");
-        if (userData && token) {
-            setUser(JSON.parse(userData));
-        }
-        setLoading(false);
+        const initAuth = async () => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                try {
+                    // Verificar token y obtener datos actualizados del usuario
+                    const userData = await apiGetUser();
+                    setUser(userData);
+                    localStorage.setItem("user", JSON.stringify(userData));
+                } catch {
+                    // Token inválido, limpiar localStorage
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    setUser(null);
+                }
+            }
+            setLoading(false);
+        };
+        
+        initAuth();
     }, []);
 
     const login = async (data: LoginRequest) => {
@@ -38,18 +52,39 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
         const registerResponse = await apiRegister(data);
         if (registerResponse) {
             localStorage.setItem("user", JSON.stringify(registerResponse.user));
+            localStorage.setItem("token", registerResponse.token);
             setUser(registerResponse.user);
         }
     }
 
     const logout = async () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        setUser(null);
+        try {
+            // Llamar al endpoint de logout en el backend
+            await apiLogout();
+        } catch (error) {
+            console.error("Error al hacer logout:", error);
+        } finally {
+            // Siempre limpiar el estado local
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            setUser(null);
+        }
+    }
+
+    const refreshUser = async () => {
+        try {
+            const userData = await apiGetUser();
+            setUser(userData);
+            localStorage.setItem("user", JSON.stringify(userData));
+        } catch (error) {
+            console.error("Error al actualizar datos del usuario:", error);
+            // Si falla, hacer logout
+            await logout();
+        }
     }
 
     return (
-        <AuthContext.Provider value={{user, loading, login, register, logout}}>
+        <AuthContext.Provider value={{user, loading, login, register, logout, refreshUser}}>
             {children}
         </AuthContext.Provider>
     )
