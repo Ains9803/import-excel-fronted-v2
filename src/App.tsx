@@ -22,36 +22,36 @@ function App() {
         );
     }
 
-    // if (!user) {
-    //     return (
-    //         <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-    //             {/* Background decorativo */}
-    //             <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-emerald-50"></div>
-    //             <div className="absolute top-0 left-0 w-96 h-96 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-    //             <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-    //             <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-green-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+    if (!user) {
+        return (
+            <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+                {/* Background decorativo */}
+                <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-emerald-50"></div>
+                <div className="absolute top-0 left-0 w-96 h-96 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+                <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+                <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-green-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
 
-    //             <div className="w-full max-w-md space-y-6 relative z-10">
-    //                 {showRegister ? <RegisterForm /> : <LoginForm />}
-    //                 <div className="text-center">
-    //                     <button
-    //                         onClick={() => setShowRegister((s: boolean) => !s)}
-    //                         className="relative inline-block text-sm font-medium cursor-pointer transition-all duration-200 group"
-    //                     >
-    //                         <span className="inline-block text-gray-700 group-hover:text-green-600 transition-colors duration-200">
-    //                             {showRegister ? (
-    //                                 <>¿Ya tienes cuenta? <span className="font-bold">Inicia sesión</span></>
-    //                             ) : (
-    //                                 <>¿No tienes cuenta? <span className="font-bold">Regístrate</span></>
-    //                             )}
-    //                         </span>
-    //                         <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 group-hover:w-full transition-all duration-300 ease-out"></span>
-    //                     </button>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     )
-    // }
+                <div className="w-full max-w-md space-y-6 relative z-10">
+                    {showRegister ? <RegisterForm /> : <LoginForm />}
+                    <div className="text-center">
+                        <button
+                            onClick={() => setShowRegister((s: boolean) => !s)}
+                            className="relative inline-block text-sm font-medium cursor-pointer transition-all duration-200 group"
+                        >
+                            <span className="inline-block text-gray-700 group-hover:text-green-600 transition-colors duration-200">
+                                {showRegister ? (
+                                    <>¿Ya tienes cuenta? <span className="font-bold">Inicia sesión</span></>
+                                ) : (
+                                    <>¿No tienes cuenta? <span className="font-bold">Regístrate</span></>
+                                )}
+                            </span>
+                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 group-hover:w-full transition-all duration-300 ease-out"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="min-h-screen">
