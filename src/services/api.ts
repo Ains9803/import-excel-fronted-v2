@@ -2,10 +2,15 @@ import axios from "axios";
 import type {ImportResult} from "../types/api.ts";
 import {API_URL, IMPORT_PEOPLE_ENDPOINT} from "../utils/constants.ts";
 
+
+
+
 export async function importExcel(
     file: File,
     onProgress?: (percent: number) => void,
 ): Promise<ImportResult> {
+    
+    
     const data = new FormData();
     data.append("file", file);
     

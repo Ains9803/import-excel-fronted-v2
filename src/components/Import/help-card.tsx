@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileSpreadsheet, CheckCircle, AlertTriangle, Download, Settings } from 'lucide-react';
-import { HelpTip } from '@/types/ui';
+import type { HelpTip } from '@/types/ui';
 
 const helpTips: HelpTip[] = [
   {
@@ -42,10 +42,10 @@ export const HelpCard = () => {
   return (
     <Card className="border-slate-200 shadow-sm transition-shadow duration-200 hover:shadow-md">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold text-slate-700">
+        <CardTitle className="text-lg sm:text-xl font-semibold text-slate-700">
           Consejos útiles
         </CardTitle>
-        <CardDescription className="text-sm text-slate-600">
+        <CardDescription className="text-xs sm:text-sm text-slate-600">
           Guía rápida para importar tus archivos Excel
         </CardDescription>
       </CardHeader>
@@ -56,13 +56,13 @@ export const HelpCard = () => {
             return (
               <div key={index} className="flex gap-3">
                 <div className="shrink-0 mt-0.5">
-                  <Icon className="h-5 w-5 text-blue-600" />
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-sm font-semibold text-slate-700 mb-2">
+                  <h4 className="text-xs sm:text-sm font-semibold text-slate-700 mb-2">
                     {tip.title}
                   </h4>
-                  <p className="text-sm text-slate-600 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                     {tip.description}
                   </p>
                 </div>
