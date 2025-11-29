@@ -3,6 +3,7 @@ import LoginPage from "@/pages/LoginPage";
 import ImportPage from "@/pages/ImportPage";
 import MainLayout from "@/components/layouts/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
+import UsersPage from "@/pages/UsersPage";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function AppRoutes() {
@@ -28,12 +29,17 @@ export default function AppRoutes() {
                 }
             />
 
-            {/* <Route>
-                path="/user_management"
-                element = {
-                        
+            <Route
+                path="/users"
+                element={
+                    <ProtectedRoute requiredRole="admin">
+                        <MainLayout>
+                            <UsersPage />
+                        </MainLayout>
+                    </ProtectedRoute>
                 }
-            </Route> */}
+            />
+
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );

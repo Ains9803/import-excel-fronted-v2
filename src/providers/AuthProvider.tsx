@@ -10,6 +10,28 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
 
     useEffect(() => {
         const initAuth = async () => {
+            // ⚠️ PRODUCCIÓN: Cambiar DEV_MODE a false antes de desplegar
+            // TODO: Cambiar DEV_MODE a false para usar autenticación real con el backend
+            const DEV_MODE = true;
+            
+            if (DEV_MODE) {
+                // MODO DESARROLLO: Usuario mock para testing
+                // Este bloque debe estar deshabilitado en producción
+                const mockUser: AuthUser = {
+                    id: "dev-admin-123",
+                    name: "Admin de Desarrollo",
+                    email: "admin@dev.com",
+                    role: "admin",
+                    createdAt: new Date().toISOString(),
+                };
+                setUser(mockUser);
+                localStorage.setItem("user", JSON.stringify(mockUser));
+                localStorage.setItem("token", "dev-token-123");
+                setLoading(false);
+                return;
+            }
+            
+            // Autenticación real con backend
             const token = localStorage.getItem("token");
             if (token) {
                 try {
