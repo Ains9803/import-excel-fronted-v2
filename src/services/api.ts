@@ -14,7 +14,7 @@ export async function importExcel(
     const data = new FormData();
     data.append("file", file);
     
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const headers: Record<string, string> = {
         "Content-Type": "multipart/form-data",
         'Accept': 'application/json',

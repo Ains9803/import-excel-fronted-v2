@@ -10,17 +10,15 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
 
     useEffect(() => {
         const initAuth = async () => {
-            const token = localStorage.getItem("token");
+            const token = sessionStorage.getItem("token");
             if (token) {
                 try {
-                    // Verificar token y obtener datos actualizados del usuario
                     const userData = await apiGetUser();
                     setUser(userData);
-                    localStorage.setItem("user", JSON.stringify(userData));
+                    sessionStorage.setItem("user", JSON.stringify(userData));
                 } catch {
-                    // Token inválido, limpiar localStorage
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("user");
+                    sessionStorage.removeItem("token");
+                    sessionStorage.removeItem("user");
                     setUser(null);
                 }
             }
@@ -33,8 +31,8 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
     const login = async (data: LoginRequest) => {
         const authResponse = await apiLogin(data);
         if (authResponse) {
-            localStorage.setItem("user", JSON.stringify(authResponse.user));
-            localStorage.setItem("token", authResponse.token);
+            sessionStorage.setItem("user", JSON.stringify(authResponse.user));
+            sessionStorage.setItem("token", authResponse.token);
             setUser(authResponse.user);
         }
     }
@@ -42,22 +40,20 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
     const register = async (data: RegisterRequest) => {
         const registerResponse = await apiRegister(data);
         if (registerResponse) {
-            localStorage.setItem("user", JSON.stringify(registerResponse.user));
-            localStorage.setItem("token", registerResponse.token);
+            sessionStorage.setItem("user", JSON.stringify(registerResponse.user));
+            sessionStorage.setItem("token", registerResponse.token);
             setUser(registerResponse.user);
         }
     }
 
     const logout = async () => {
         try {
-            // Llamar al endpoint de logout en el backend
             await apiLogout();
         } catch (error) {
             console.error("Error al hacer logout:", error);
         } finally {
-            // Siempre limpiar el estado local
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("user");
             setUser(null);
         }
     }
@@ -66,10 +62,9 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
         try {
             const userData = await apiGetUser();
             setUser(userData);
-            localStorage.setItem("user", JSON.stringify(userData));
+            sessionStorage.setItem("user", JSON.stringify(userData));
         } catch (error) {
             console.error("Error al actualizar datos del usuario:", error);
-            // Si falla, hacer logout
             await logout();
         }
     }
