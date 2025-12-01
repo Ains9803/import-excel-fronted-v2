@@ -9,11 +9,8 @@ export interface RegisterRequest {
     password: string
 }
 
-export interface AuthUser {
-    id: string
-    name: string
-    email: string
-}
+// Re-export AuthUser from user.ts to maintain backward compatibility
+export type { AuthUser } from './user';
 
 export interface AuthResponse {
     token: string
