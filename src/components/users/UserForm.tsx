@@ -5,18 +5,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+// Comentado: el backend no soporta roles aún
+// import {
+//     Select,
+//     SelectContent,
+//     SelectItem,
+//     SelectTrigger,
+//     SelectValue,
+// } from "@/components/ui/select";
 import { AlertCircle, Loader2, Save, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AuthUser, UserRole } from "@/types/user";
 
 // Schema de validación para crear usuario
+// Nota: role comentado porque el backend no lo soporta aún
 const createUserSchema = z.object({
     name: z.string().min(1, "El nombre es requerido"),
     email: z.string().min(1, "El email es requerido").email("Email inválido"),
@@ -24,9 +26,7 @@ const createUserSchema = z.object({
         .string()
         .min(1, "La contraseña es requerida")
         .min(6, "La contraseña debe tener al menos 6 caracteres"),
-    role: z.enum(["admin", "user"], {
-        required_error: "El rol es requerido",
-    }),
+    role: z.enum(["admin", "user"]).optional(),
 });
 
 // Schema de validación para editar usuario (contraseña opcional)
@@ -40,9 +40,7 @@ const updateUserSchema = z.object({
             (val) => !val || val.length >= 6,
             "La contraseña debe tener al menos 6 caracteres"
         ),
-    role: z.enum(["admin", "user"], {
-        required_error: "El rol es requerido",
-    }),
+    role: z.enum(["admin", "user"]).optional(),
 });
 
 type CreateFormData = z.infer<typeof createUserSchema>;
@@ -102,7 +100,7 @@ export default function UserForm({
     const nameValue = watch("name");
     const emailValue = watch("email");
     const passwordValue = watch("password");
-    const roleValue = watch("role");
+    // const roleValue = watch("role"); // Comentado: el backend no soporta roles aún
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -224,7 +222,7 @@ export default function UserForm({
                 )}
             </div>
 
-            {/* Campo Rol */}
+            {/* Campo Rol - Comentado: el backend no soporta roles aún
             <div className="space-y-2">
                 <Label htmlFor="role" className="text-sm font-semibold text-gray-700">
                     Rol
@@ -262,6 +260,7 @@ export default function UserForm({
                     </p>
                 )}
             </div>
+            */}
 
             {/* Botones */}
             <div className="flex gap-3 pt-4">
