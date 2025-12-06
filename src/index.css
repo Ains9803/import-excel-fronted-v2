@@ -94,3 +94,32 @@
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+
+/* Respeto a preferencias de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* Desactivar todas las animaciones no esenciales */
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    
+    /* Reducir duración de transiciones a mínimo */
+    transition-duration: 0.01ms !important;
+    
+    /* Desactivar scroll suave */
+    scroll-behavior: auto !important;
+  }
+  
+  /* Mantener animaciones funcionales esenciales pero simplificadas */
+  .animate-spin {
+    animation-duration: 1s !important;
+  }
+  
+  /* Desactivar completamente animaciones decorativas */
+  .animate-blob,
+  .animate-bounce,
+  .animate-shimmer {
+    animation: none !important;
+  }
+}

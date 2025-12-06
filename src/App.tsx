@@ -1,13 +1,8 @@
-import './App.css'
-import ImportExcel from "./components/Import/ImportExcel.tsx";
-import { useAuth } from "./contex/AuthContext.tsx";
-import { useState } from "react";
-import LoginForm from "./components/User/LoginForm.tsx";
-import RegisterForm from "./components/User/RegisterForm.tsx";
-import { Button } from "./components/ui/button.tsx";
-import { LogOut, User, FileSpreadsheet } from "lucide-react";
+import "./App.css";
+import AppRoutes from "./routes";
 
 function App() {
+<<<<<<< HEAD
     const { user, logout } = useAuth();
     const [showRegister, setShowRegister] = useState(false);
 
@@ -84,6 +79,9 @@ function App() {
             </main>
         </div>
     )
+=======
+    return <AppRoutes />;
+>>>>>>> 03abdc39fe7fe9eb580ec6b8752fa4755626028c
 }
 
-export default App
+export default App;
