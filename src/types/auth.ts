@@ -1,3 +1,5 @@
+import type { AuthUser } from './user';
+
 export interface LoginRequest {
     email: string
     password: string
@@ -17,12 +19,10 @@ export interface AuthResponse {
     user: AuthUser
 }
 
-
 export interface AuthContextType {
     user: AuthUser | null,
     loading: boolean,
     login: (data: LoginRequest) => Promise<void>,
-    register: (data: RegisterRequest) => Promise<void>,
     logout: () => Promise<void>,
     refreshUser: () => Promise<void>,
 }

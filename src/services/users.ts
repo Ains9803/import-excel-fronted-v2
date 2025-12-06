@@ -2,40 +2,6 @@ import axios from "axios";
 import type { AuthUser, CreateUserRequest, UpdateUserRequest, UsersListResponse } from "../types/user";
 import { API_URL } from "../utils/constants";
 
-// Datos mock para funciones no soportadas por el backend
-// El backend solo soporta: POST /api/user (crear) y GET /api/user (usuario actual)
-// TODO: Actualizar cuando el backend implemente los endpoints de listar, actualizar y eliminar
-const mockUsers: AuthUser[] = [
-    {
-        id: "dev-admin-123",
-        name: "Admin de Desarrollo",
-        email: "admin@dev.com",
-        role: "admin",
-        createdAt: "2024-01-15T10:30:00Z",
-    },
-    {
-        id: "user-001",
-        name: "Juan Pérez",
-        email: "juan.perez@example.com",
-        role: "user",
-        createdAt: "2024-02-20T14:45:00Z",
-    },
-    {
-        id: "user-002",
-        name: "María García",
-        email: "maria.garcia@example.com",
-        role: "admin",
-        createdAt: "2024-03-10T09:15:00Z",
-    },
-    {
-        id: "user-003",
-        name: "Carlos Rodríguez",
-        email: "carlos.rodriguez@example.com",
-        role: "user",
-        createdAt: "2024-03-25T16:20:00Z",
-    },
-];
-
 // Create axios instance with baseURL and token interceptor
 const usersApi = axios.create({
     baseURL: `${API_URL}`,
@@ -43,7 +9,7 @@ const usersApi = axios.create({
 
 // Interceptor to automatically add token to requests
 usersApi.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -58,19 +24,63 @@ interface CreateUserResponse {
     role: string;
 }
 
+// Interfaz de respuesta del backend para listar usuarios
+interface BackendUsersListResponse {
+    data: Array<{
+        id: number;
+        name: string;
+        email: string;
+        role?: string;
+        created_at?: string;
+    }>;
+    total: number;
+    page: number;
+    size: number;
+}
+
 /**
- * Get all users
+ * Get all users with pagination and filters
+ * @param page - Page number (default: 0)
+ * @param size - Items per page (default: 100)
+ * @param orderBy - Field to order by (default: "id")
+ * @param order - Order direction: ASC or DESC (default: "ASC")
+ * @param filter - Text to filter by name or email (optional)
  * @returns Promise with users list and total count
  * 
- * NOTA: El backend no tiene endpoint para listar usuarios.
- * Se usa mock data hasta que se implemente GET /api/users
+ * Endpoint: GET /api/user/list
  */
-export async function getUsers(): Promise<UsersListResponse> {
-    // TODO: Cambiar a llamada real cuando el backend implemente GET /api/users
-    await new Promise(resolve => setTimeout(resolve, 500));
+export async function getUsers(
+    page: number = 0,
+    size: number = 100,
+    orderBy: string = "id",
+    order: "ASC" | "DESC" = "ASC",
+    filter?: string
+): Promise<UsersListResponse> {
+    const params: Record<string, string | number> = {
+        page,
+        size,
+        orderBy,
+        order,
+    };
+    
+    if (filter) {
+        params.filter = filter;
+    }
+    
+    const response = await usersApi.get<BackendUsersListResponse>('user/list', { params });
+    
+    // Transformar respuesta del backend al formato del frontend
+    const users: AuthUser[] = response.data.data.map(user => ({
+        id: String(user.id),
+        name: user.name,
+        email: user.email,
+        role: (user.role || 'user') as AuthUser['role'],
+        createdAt: user.created_at,
+    }));
+    
     return {
-        users: mockUsers,
-        total: mockUsers.length,
+        users,
+        total: response.data.total,
     };
 }
 
@@ -79,13 +89,12 @@ export async function getUsers(): Promise<UsersListResponse> {
  * @param id - User ID
  * @returns Promise with user data
  * 
- * NOTA: El backend no tiene endpoint para obtener usuario por ID.
- * Se usa mock data hasta que se implemente GET /api/users/{id}
+ * NOTA: El backend no tiene endpoint específico para obtener usuario por ID.
+ * Se obtiene de la lista de usuarios.
  */
 export async function getUserById(id: string): Promise<AuthUser> {
-    // TODO: Cambiar a llamada real cuando el backend implemente GET /api/users/{id}
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const user = mockUsers.find(u => u.id === id);
+    const response = await getUsers();
+    const user = response.users.find(u => u.id === id);
     if (!user) {
         throw new Error("Usuario no encontrado");
     }
@@ -94,14 +103,17 @@ export async function getUserById(id: string): Promise<AuthUser> {
 
 /**
  * Create a new user
- * @param data - User creation data (name, email, password, role)
+ * @param data - User creation data (name, email, password)
  * @returns Promise with created user data
  * 
- * Usa el endpoint real: POST /api/user
+ * Endpoint: POST /api/user
+ * NOTA: El backend NO acepta el campo "role". Los usuarios se crean sin rol asignado.
+ * Los roles deben asignarse manualmente desde el backend o base de datos.
  */
 export async function createUser(data: CreateUserRequest): Promise<AuthUser> {
-    // Llamada real al backend: POST /api/user
-    const response = await usersApi.post<CreateUserResponse>('/api/user', {
+    // Llamar al backend: POST /api/user
+    // El backend solo acepta: name, email, password (NO acepta role)
+    const response = await usersApi.post<CreateUserResponse>('user', {
         name: data.name,
         email: data.email,
         password: data.password,
@@ -112,53 +124,44 @@ export async function createUser(data: CreateUserRequest): Promise<AuthUser> {
         id: String(response.data.id),
         name: response.data.name,
         email: response.data.email,
-        role: (response.data.role || data.role || 'user') as AuthUser['role'],
+        role: (response.data.role || 'user') as AuthUser['role'],
         createdAt: new Date().toISOString(),
     };
-    
-    // Agregar al mock para que aparezca en la lista
-    mockUsers.push(newUser);
     
     return newUser;
 }
 
 /**
  * Update an existing user
- * @param id - User ID
- * @param data - User update data (name, email, password, role)
+ * @param _id - User ID
+ * @param _data - User update data (name, email, password, role)
  * @returns Promise with updated user data
  * 
- * NOTA: El backend no tiene endpoint para actualizar usuarios.
- * Se usa mock data hasta que se implemente PUT /api/users/{id}
+ * ⚠️ ADVERTENCIA: El backend tiene el endpoint PUT /api/user pero está VACÍO (sin implementación).
+ * Esta función lanzará un error hasta que el backend lo implemente.
  */
-export async function updateUser(id: string, data: UpdateUserRequest): Promise<AuthUser> {
-    // TODO: Cambiar a llamada real cuando el backend implemente PUT /api/users/{id}
-    await new Promise(resolve => setTimeout(resolve, 800));
+export async function updateUser(_id: string, _data: UpdateUserRequest): Promise<AuthUser> {
+    // El backend tiene PUT /api/user pero está sin implementar
+    throw new Error("La funcionalidad de editar usuarios aún no está implementada en el backend. Contacta al administrador del sistema.");
     
-    const userIndex = mockUsers.findIndex(u => u.id === id);
-    if (userIndex === -1) {
-        throw new Error("Usuario no encontrado");
-    }
+    // TODO: Descomentar cuando el backend implemente PUT /api/user
+    /*
+    const payload: Record<string, unknown> = { id: _id };
+    if (_data.name) payload.name = _data.name;
+    if (_data.email) payload.email = _data.email;
+    if (_data.password) payload.password = _data.password;
+    if (_data.role) payload.role = _data.role;
     
-    // Verificar email único (excepto el email actual del usuario)
-    if (data.email && mockUsers.some(u => u.email === data.email && u.id !== id)) {
-        throw {
-            response: {
-                data: {
-                    message: "El email ya está registrado",
-                },
-            },
-        };
-    }
+    const response = await usersApi.put<CreateUserResponse>('user', payload);
     
-    const updatedUser: AuthUser = {
-        ...mockUsers[userIndex],
-        ...(data.name && { name: data.name }),
-        ...(data.email && { email: data.email }),
-        ...(data.role && { role: data.role }),
+    return {
+        id: String(response.data.id),
+        name: response.data.name,
+        email: response.data.email,
+        role: (response.data.role || 'user') as AuthUser['role'],
+        createdAt: new Date().toISOString(),
     };
-    mockUsers[userIndex] = updatedUser;
-    return updatedUser;
+    */
 }
 
 /**
@@ -166,17 +169,8 @@ export async function updateUser(id: string, data: UpdateUserRequest): Promise<A
  * @param id - User ID
  * @returns Promise that resolves when user is deleted
  * 
- * NOTA: El backend no tiene endpoint para eliminar usuarios.
- * Se usa mock data hasta que se implemente DELETE /api/users/{id}
+ * Endpoint: DELETE /api/user/{id}
  */
 export async function deleteUser(id: string): Promise<void> {
-    // TODO: Cambiar a llamada real cuando el backend implemente DELETE /api/users/{id}
-    await new Promise(resolve => setTimeout(resolve, 600));
-    
-    const userIndex = mockUsers.findIndex(u => u.id === id);
-    if (userIndex === -1) {
-        throw new Error("Usuario no encontrado");
-    }
-    
-    mockUsers.splice(userIndex, 1);
+    await usersApi.delete(`user/${id}`);
 }

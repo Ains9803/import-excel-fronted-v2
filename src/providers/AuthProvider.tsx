@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
-import type { AuthUser, LoginRequest, RegisterRequest} from "../types/auth.ts";
-import {login as apiLogin, register as apiRegister, logout as apiLogout, getUser as apiGetUser} from "../services/auth.ts";
+import type { AuthUser, LoginRequest} from "../types/auth.ts";
+import {login as apiLogin, logout as apiLogout, getUser as apiGetUser} from "../services/auth.ts";
 import { AuthContext } from "@/context/AuthContext.ts";
 
 
@@ -10,29 +10,8 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
 
     useEffect(() => {
         const initAuth = async () => {
-            // ⚠️ PRODUCCIÓN: Cambiar DEV_MODE a false antes de desplegar
-            // TODO: Cambiar DEV_MODE a false para usar autenticación real con el backend
-            const DEV_MODE = true;
-            
-            if (DEV_MODE) {
-                // MODO DESARROLLO: Usuario mock para testing
-                // Este bloque debe estar deshabilitado en producción
-                const mockUser: AuthUser = {
-                    id: "dev-admin-123",
-                    name: "Admin de Desarrollo",
-                    email: "admin@dev.com",
-                    role: "admin",
-                    createdAt: new Date().toISOString(),
-                };
-                setUser(mockUser);
-                localStorage.setItem("user", JSON.stringify(mockUser));
-                localStorage.setItem("token", "dev-token-123");
-                setLoading(false);
-                return;
-            }
-            
             // Autenticación real con backend
-            const token = localStorage.getItem("token");
+            const token = sessionStorage.getItem("token");
             if (token) {
                 try {
                     const userData = await apiGetUser();
@@ -56,15 +35,6 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
             sessionStorage.setItem("user", JSON.stringify(authResponse.user));
             sessionStorage.setItem("token", authResponse.token);
             setUser(authResponse.user);
-        }
-    }
-
-    const register = async (data: RegisterRequest) => {
-        const registerResponse = await apiRegister(data);
-        if (registerResponse) {
-            sessionStorage.setItem("user", JSON.stringify(registerResponse.user));
-            sessionStorage.setItem("token", registerResponse.token);
-            setUser(registerResponse.user);
         }
     }
 
@@ -92,7 +62,7 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{user, loading, login, register, logout, refreshUser}}>
+        <AuthContext.Provider value={{user, loading, login, logout, refreshUser}}>
             {children}
         </AuthContext.Provider>
     )

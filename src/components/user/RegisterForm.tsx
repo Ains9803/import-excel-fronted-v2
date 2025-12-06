@@ -8,7 +8,6 @@ import { Label } from "../ui/label"
 import { Button } from "../ui/button"
 import { Mail, Lock, User, Eye, EyeOff, UserPlus, AlertCircle, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useAuth } from '@/hooks/useAuth'
 
 // Schema de validación con mensajes específicos
 const schema = z.object({
@@ -33,7 +32,9 @@ type FormData = z.infer<typeof schema>
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 
 export default function RegisterForm() {
-    const { register: registerUser } = useAuth()
+    // NOTA: Este componente no se usa porque no existe registro público en el backend
+    // Solo los admins pueden crear usuarios desde la página de gestión de usuarios
+    // const { register: registerUser } = useAuth()
     const [formState, setFormState] = useState<FormState>('idle')
     const [showPassword, setShowPassword] = useState(false)
     const [serverError, setServerError] = useState<string>('')
@@ -58,8 +59,11 @@ export default function RegisterForm() {
         setServerError('')
         
         try {
-            await registerUser(data)
-            setFormState('success')
+            // NOTA: No existe función registerUser porque no hay registro público
+            // Este componente está deshabilitado
+            console.log('Registro no disponible:', data)
+            setServerError('El registro público no está disponible. Contacta a un administrador.')
+            setFormState('error')
         } catch (error) {
             setFormState('error')
             const err = error as { response?: { data?: { message?: string } } }

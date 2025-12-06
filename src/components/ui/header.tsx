@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { FileSpreadsheet, LogOut, User, Users, Home, ChevronDown, Menu } from "lucide-react";
 import { Button } from "./button";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export function Header() {
     const { user, logout } = useAuth();
