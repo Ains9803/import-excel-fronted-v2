@@ -14,6 +14,19 @@ export interface RegisterRequest {
 // Re-export AuthUser from user.ts to maintain backward compatibility
 export type { AuthUser } from './user';
 
+// Respuesta REAL del backend para login
+export interface BackendLoginResponse {
+    status: number;
+    message: string;
+    error: boolean;
+    token: string;
+    user: string;      // ← Es un string (nombre del usuario), NO un objeto
+    email: string;
+    role: string;
+    token_type: string;
+}
+
+// Respuesta transformada para uso interno en el frontend
 export interface AuthResponse {
     token: string
     user: AuthUser
