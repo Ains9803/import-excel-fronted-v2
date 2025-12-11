@@ -1,25 +1,24 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
     AlertDialog,
     AlertDialogContent,
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { UserPlus, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { UserPlus, Loader2, AlertCircle } from "lucide-react";
 import UserTable from "@/components/users/UserTable";
 import UserForm from "@/components/users/UserForm";
 import UserDeleteDialog from "@/components/users/UserDeleteDialog";
 import { getUsers, createUser, updateUser, deleteUser } from "@/services/users";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/useToast";
 import type { AuthUser, CreateUserRequest, UpdateUserRequest } from "@/types/user";
-
-type AlertType = "success" | "error" | null;
 
 export default function UsersPage() {
     const { user: currentUser } = useAuth();
+    const { toast } = useToast();
     const [users, setUsers] = useState<AuthUser[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -27,21 +26,17 @@ export default function UsersPage() {
     // Estados para modal de creación
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
-    const [createFormKey, setCreateFormKey] = useState(0); // Key para resetear formulario
+    const [createFormKey, setCreateFormKey] = useState(0);
 
     // Estados para modal de edición
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<AuthUser | null>(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [editFormKey, setEditFormKey] = useState(0); // Key para resetear formulario
+    const [editFormKey, setEditFormKey] = useState(0);
 
     // Estados para diálogo de eliminación
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [userToDelete, setUserToDelete] = useState<AuthUser | null>(null);
-
-    // Estados para alertas
-    const [alertType, setAlertType] = useState<AlertType>(null);
-    const [alertMessage, setAlertMessage] = useState("");
 
     // Cargar usuarios al montar el componente
     useEffect(() => {
@@ -65,14 +60,7 @@ export default function UsersPage() {
         }
     };
 
-    const showAlert = (type: "success" | "error", message: string) => {
-        setAlertType(type);
-        setAlertMessage(message);
-        setTimeout(() => {
-            setAlertType(null);
-            setAlertMessage("");
-        }, 5000);
-    };
+
 
     // Función para crear usuario
     const handleCreateUser = async (data: CreateUserRequest | UpdateUserRequest) => {
@@ -81,15 +69,19 @@ export default function UsersPage() {
             const newUser = await createUser(data as CreateUserRequest);
             setUsers((prev) => [...prev, newUser]);
             setCreateModalOpen(false);
-            setCreateFormKey(prev => prev + 1); // Resetear formulario después de éxito
-            showAlert("success", `Usuario "${newUser.name}" creado exitosamente`);
+            setCreateFormKey(prev => prev + 1);
+            toast({
+                variant: "success",
+                title: "Usuario creado",
+                description: `Usuario "${newUser.name}" creado exitosamente`,
+            });
         } catch (err) {
             const error = err as { response?: { data?: { message?: string } } };
-            showAlert(
-                "error",
-                error.response?.data?.message ||
-                    "Error al crear el usuario. Por favor, intenta nuevamente."
-            );
+            toast({
+                variant: "error",
+                title: "Error",
+                description: error.response?.data?.message || "Error al crear el usuario. Por favor, intenta nuevamente.",
+            });
         } finally {
             setIsCreating(false);
         }
@@ -105,10 +97,11 @@ export default function UsersPage() {
             selectedUser.role === "admin" &&
             data.role === "user"
         ) {
-            showAlert(
-                "error",
-                "No puedes quitarte el rol de administrador a ti mismo"
-            );
+            toast({
+                variant: "error",
+                title: "Acción no permitida",
+                description: "No puedes quitarte el rol de administrador a ti mismo",
+            });
             return;
         }
 
@@ -123,15 +116,19 @@ export default function UsersPage() {
             );
             setEditModalOpen(false);
             setSelectedUser(null);
-            setEditFormKey(prev => prev + 1); // Resetear formulario después de éxito
-            showAlert("success", `Usuario "${updatedUser.name}" actualizado exitosamente`);
+            setEditFormKey(prev => prev + 1);
+            toast({
+                variant: "success",
+                title: "Usuario actualizado",
+                description: `Usuario "${updatedUser.name}" actualizado exitosamente`,
+            });
         } catch (err) {
             const error = err as { response?: { data?: { message?: string } } };
-            showAlert(
-                "error",
-                error.response?.data?.message ||
-                    "Error al actualizar el usuario. Por favor, intenta nuevamente."
-            );
+            toast({
+                variant: "error",
+                title: "Error",
+                description: error.response?.data?.message || "Error al actualizar el usuario. Por favor, intenta nuevamente.",
+            });
         } finally {
             setIsEditing(false);
         }
@@ -146,14 +143,18 @@ export default function UsersPage() {
             setUsers((prev) => prev.filter((u) => u.id !== userToDelete.id));
             setDeleteDialogOpen(false);
             setUserToDelete(null);
-            showAlert("success", `Usuario "${userToDelete.name}" eliminado exitosamente`);
+            toast({
+                variant: "success",
+                title: "Usuario eliminado",
+                description: `Usuario "${userToDelete.name}" eliminado exitosamente`,
+            });
         } catch (err) {
             const error = err as { response?: { data?: { message?: string } } };
-            showAlert(
-                "error",
-                error.response?.data?.message ||
-                    "Error al eliminar el usuario. Por favor, intenta nuevamente."
-            );
+            toast({
+                variant: "error",
+                title: "Error",
+                description: error.response?.data?.message || "Error al eliminar el usuario. Por favor, intenta nuevamente.",
+            });
         }
     };
 
@@ -197,35 +198,7 @@ export default function UsersPage() {
                 </div>
             </div>
 
-            {/* Alertas */}
-            {alertType && (
-                <div className="mb-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <Alert
-                        className={
-                            alertType === "success"
-                                ? "border-green-200 bg-green-50"
-                                : "border-red-200 bg-red-50"
-                        }
-                    >
-                        <div className="flex items-start gap-3">
-                            {alertType === "success" ? (
-                                <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                            ) : (
-                                <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
-                            )}
-                            <AlertDescription
-                                className={
-                                    alertType === "success"
-                                        ? "text-green-800"
-                                        : "text-red-800"
-                                }
-                            >
-                                {alertMessage}
-                            </AlertDescription>
-                        </div>
-                    </Alert>
-                </div>
-            )}
+
 
             {/* Contenido principal */}
             <Card className="shadow-lg border-gray-200">
